@@ -1,0 +1,138 @@
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.75rem;
+}
+
+.product-card-wrapper {
+    display: flex;
+}
+
+.product-card-link {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    display: flex;
+}
+
+.product-card-link:hover {
+    color: inherit;
+}
+
+.product-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(2, 132, 199, 0.15);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Abstract Card Art */
+.product-artwork {
+    height: 120px;
+    position: relative;
+    background-color: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.artwork-gradient {
+    position: absolute;
+    width: 130%;
+    height: 130%;
+    background: radial-gradient(circle, rgba(2, 132, 199, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+    top: -15%;
+    left: -15%;
+    transition: var(--transition);
+}
+
+.product-card:hover .artwork-gradient {
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+    transform: scale(1.1);
+}
+
+.artwork-icon {
+    width: 42px;
+    height: 42px;
+    color: var(--accent);
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.product-card:hover .artwork-icon {
+    opacity: 0.95;
+    transform: scale(1.05) rotate(1deg);
+    color: #f43f5e;
+}
+
+/* Info */
+.product-info-panel {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.product-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+}
+
+.product-desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1.25rem;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.product-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.view-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--accent);
+    transition: var(--transition);
+}
+
+.product-card:hover .view-btn {
+    color: var(--accent-light);
+    transform: translateX(3px);
+}
+
+/* Empty state */
+.empty-state {
+    max-width: 500px;
+    margin: 4rem auto;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--text-muted);
+}

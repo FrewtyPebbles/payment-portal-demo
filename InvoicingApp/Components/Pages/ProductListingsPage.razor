@@ -1,5 +1,4 @@
 ﻿@page "/products"
-@rendermode InteractiveServer
 
 @using InvoicingApp.Services.Ecommerce
 @using InvoicingApp.Services.Notification
@@ -10,20 +9,56 @@
 @inject NavigationManager Navigation
 @inject NotificationService NotificationService
 
-<h1>
-    Products Listing
-</h1>
+<div class="products-container">
+    <div class="products-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="m-0">Store Collection</h1>
+            <p class="text-secondary m-0 mt-1">Explore our range of premium products. Click to view specifications or purchase.</p>
+        </div>
+        <a href="add_product" class="btn btn-primary d-flex align-items-center gap-2">
+            <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add Store Item
+        </a>
+    </div>
 
-<ul>
-    @foreach (Product product in DBContext.Products) {
-        <li>
-            <a href="/product/@product.StripeProductID">
-                <div>
-                    <h2>@product.Name</h2>
-                    <p>@product.Description</p>
-                </div>
-                <i>$@product.Price</i>
-            </a>
-        </li>
+    @if (!DBContext.Products.Any())
+    {
+        <div class="empty-state text-center py-5 section-card">
+            <svg class="empty-icon mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <h3>No Items Available</h3>
+            <p class="text-secondary">Please add products to the catalog to display them here.</p>
+        </div>
     }
-</ul>
+    else
+    {
+        <div class="product-grid">
+            @foreach (Product product in DBContext.Products) {
+                <div class="product-card-wrapper">
+                    <a class="product-card-link" href="/product/@product.StripeProductID">
+                        <div class="product-card">
+                            <!-- Graphical Abstract Placeholder -->
+                            <div class="product-artwork">
+                                <div class="artwork-gradient"></div>
+                                <svg class="artwork-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                            </div>
+                            <div class="product-info-panel">
+                                <h2 class="product-title text-truncate" title="@product.Name">@product.Name</h2>
+                                <p class="product-desc line-clamp-3">@product.Description</p>
+                                <div class="product-footer d-flex justify-content-between align-items-center mt-auto pt-3">
+                                    <span class="badge-price">$@product.Price.ToString("F2")</span>
+                                    <span class="view-btn">View Details &rarr;</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>

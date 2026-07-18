@@ -10,13 +10,87 @@
 @inject NavigationManager Navigation
 @inject NotificationService NotificationService
 
-<PageTitle>LogiSale - @Product!.Name</PageTitle>
+<div class="product-page-container">
+    <!-- Back to Catalog link -->
+    <a href="products" class="back-link d-inline-flex align-items-center gap-2 mb-4">
+        <svg style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Store Catalog
+    </a>
 
-<h1 role="product name">@Product!.Name</h1>
+    @if (Product != null)
+    {
+        <PageTitle>LogiSale - @Product.Name</PageTitle>
 
-<p role="description">@Product!.Description</p>
+        <div class="product-details-card section-card">
+            <div class="row g-5 align-items-center">
+                <!-- Column 1: Warm Abstract Visual -->
+                <div class="col-lg-5 text-center">
+                    <div class="visual-container">
+                        <div class="warm-glow-backdrop"></div>
+                        <div class="mockup-card">
+                            <div class="mockup-header">
+                                <span class="mockup-circle"></span>
+                                <span class="mockup-circle"></span>
+                                <span class="mockup-circle"></span>
+                            </div>
+                            <div class="mockup-body d-flex flex-column align-items-center justify-content-center">
+                                <svg class="mockup-icon mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                                <span class="mockup-chip">PREMIUM SELECTION</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<button class="btn btn-primary" @onclick="AddItemToCart">Add To Cart</button>
+                <!-- Column 2: Details & Pricing -->
+                <div class="col-lg-7">
+                    <div class="product-content-wrapper">
+                        <span class="product-category">Now In Stock</span>
+                        <h1 class="product-title mt-2 mb-3" role="product name">@Product.Name</h1>
+                        
+                        <div class="price-box d-flex align-items-center gap-3 mb-4">
+                            <span class="price-val">$@Product.Price.ToString("F2")</span>
+                            <span class="tax-badge">Tax Included</span>
+                        </div>
+
+                        <div class="desc-box mb-4">
+                            <h4 class="box-subtitle">About This Item</h4>
+                            <p class="product-description" role="description">@Product.Description</p>
+                        </div>
+
+                        <!-- Core benefits -->
+                        <ul class="benefits-list list-unstyled mb-4">
+                            <li class="benefit-item d-flex align-items-center gap-2 mb-2">
+                                <svg class="benefit-check" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Instant delivery via digital portal</span>
+                            </li>
+                            <li class="benefit-item d-flex align-items-center gap-2 mb-2">
+                                <svg class="benefit-check" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Verified premium quality check guarantee</span>
+                            </li>
+                        </ul>
+
+                        <div class="action-box pt-3">
+                            <button class="btn btn-primary btn-lg px-5 py-3 d-flex align-items-center gap-2 w-100 w-sm-auto" @onclick="AddItemToCart">
+                                <svg style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Add To Shopping Bag
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     [Parameter]

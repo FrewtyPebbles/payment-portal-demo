@@ -1,3 +1,5 @@
+@rendermode InteractiveServer
+
 @using InvoicingApp.Services.Notification
 @inject NotificationService NotificationService
 @implements IDisposable
@@ -5,7 +7,7 @@
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
     @foreach (var toast in NotificationService.Toasts)
     {
-        <div class="toast show align-items-center text-white @GetBgColor(toast.Level) border-0 mb-2" role="alert">
+        <div class="toast show align-items-center text-secondary @GetBgColor(toast.Level) border-0 mb-2" role="alert">
             <div class="d-flex">
                 <div class="toast-body">
                     @toast.Message
@@ -20,12 +22,17 @@
 @code {
     protected override void OnInitialized()
     {
-        NotificationService.OnNotify += StateHasChanged;
+        NotificationService.OnNotify += OnNotifyChanged;
+    }
+
+    private void OnNotifyChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private void RemoveToast(ToastMessage toast)
     {
-        NotificationService.Toasts.Remove(toast);
+        NotificationService.RemoveToast(toast);
     }
 
     private string GetBgColor(ToastLevel level) => level switch
@@ -38,6 +45,6 @@
 
     public void Dispose()
     {
-        NotificationService.OnNotify -= StateHasChanged;
+        NotificationService.OnNotify -= OnNotifyChanged;
     }
 }

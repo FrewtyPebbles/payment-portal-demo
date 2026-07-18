@@ -6,11 +6,20 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+        <header class="top-header px-4 d-flex justify-content-between align-items-center">
+            <div class="header-status d-none d-sm-flex align-items-center gap-2">
+                <span class="status-indicator"></span>
+                <span class="status-text">LogiSale Storefront: Open</span>
+            </div>
+            <div class="header-actions d-flex align-items-center gap-3">
+                <a class="header-link" href="products">
+                    <span class="badge-shopping">Shop All Items</span>
+                </a>
+                <div class="user-avatar">JD</div>
+            </div>
+        </header>
 
-        <article class="content px-4">
+        <article class="content px-4 py-3">
             @Body
         </article>
     </main>

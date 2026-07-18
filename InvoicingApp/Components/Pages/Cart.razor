@@ -11,27 +11,110 @@
 @inject IEcommerceService EcommerceService
 @inject NotificationService NotificationService
 
-<h1>Cart</h1>
+<div class="cart-page-container">
+    <div class="cart-header mb-4">
+        <h1>Your Shopping Bag</h1>
+        <p class="text-secondary m-0 mt-1">Review your selected items before initiating secure checkout.</p>
+    </div>
 
-<ul>
-    @foreach ((Product product, int quantity) in Products) {
-        <li class="cart-item">
-            <div>
-                <h2>@product.Name</h2>
-                <p>@product.Description</p>
-            </div>
-            <div>
-                Quantity @quantity
-            </div>
-            <div>
-                Price <i>$@product.Price</i>
-            </div>
-            <button class="btn btn-primary" @onclick="async _ => await RemoveItemFromCart(product)">Remove</button>
-        </li>
+    @if (!Products.Any())
+    {
+        <div class="empty-cart text-center py-5 section-card">
+            <svg class="empty-cart-icon mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <h3>Your Basket is Empty</h3>
+            <p class="text-secondary mb-4">It looks like you haven't added any premium products yet.</p>
+            <a href="products" class="btn btn-primary">
+                Explore Our Collection
+            </a>
+        </div>
     }
-</ul>
+    else
+    {
+        <div class="row g-4">
+            <!-- Left Side: List of Items -->
+            <div class="col-lg-8">
+                <div class="cart-items-list d-flex flex-column gap-3">
+                    @foreach ((Product product, int quantity) in Products) {
+                        <div class="cart-item-card">
+                            <!-- Abstract Thumbnail -->
+                            <div class="cart-item-visual">
+                                <svg style="width: 24px; height: 24px; color: var(--accent);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                            </div>
 
-<button class="btn btn-primary" @onclick="CheckOut">Check Out</button>
+                            <!-- Title & Description -->
+                            <div class="cart-item-details">
+                                <h3 class="cart-item-title text-truncate m-0">@product.Name</h3>
+                                <p class="cart-item-desc text-secondary m-0 mt-1">@product.Description</p>
+                            </div>
+
+                            <!-- Quantity Pill -->
+                            <div class="cart-item-qty">
+                                <span class="qty-label text-muted">QTY</span>
+                                <span class="qty-val">@quantity</span>
+                            </div>
+
+                            <!-- Pricing -->
+                            <div class="cart-item-price text-end">
+                                <span class="price-single text-muted">$@product.Price.ToString("F2") ea</span>
+                                <span class="price-total">$@((product.Price * quantity).ToString("F2"))</span>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="cart-item-action">
+                                <button class="btn-remove" @onclick="async _ => await RemoveItemFromCart(product)" title="Remove item">
+                                    <svg style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h10M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right Side: Checkout Summary -->
+            <div class="col-lg-4">
+                <div class="summary-card section-card">
+                    <h3 class="summary-title mb-4">Order Summary</h3>
+                    
+                    <div class="summary-row d-flex justify-content-between mb-3">
+                        <span class="text-secondary">Subtotal</span>
+                        <span class="font-mono">$@(Products.Sum(p => p.Item1.Price * p.Item2).ToString("F2"))</span>
+                    </div>
+                    <div class="summary-row d-flex justify-content-between mb-3">
+                        <span class="text-secondary">Shipping & Taxes</span>
+                        <span class="text-muted">Calculated at Checkout</span>
+                    </div>
+                    
+                    <hr class="summary-divider my-4" />
+
+                    <div class="summary-row d-flex justify-content-between align-items-center mb-4">
+                        <span class="total-label">Estimated Total</span>
+                        <span class="total-val">$@(Products.Sum(p => p.Item1.Price * p.Item2).ToString("F2"))</span>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg w-100 py-3 d-flex align-items-center justify-content-center gap-2" @onclick="CheckOut">
+                        <svg style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        Proceed to Secure Checkout
+                    </button>
+                    
+                    <div class="secure-checkout-notice text-center mt-3 d-flex align-items-center justify-content-center gap-1 text-muted">
+                        <svg style="width: 14px; height: 14px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span>Secured Credit Card Payments</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
 @code {
     public List<(Product, int)> Products = [];

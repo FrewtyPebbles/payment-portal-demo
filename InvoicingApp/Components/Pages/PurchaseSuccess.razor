@@ -8,11 +8,47 @@
 
 <PageTitle>Successful Purchase</PageTitle>
 
-<h1 role="product name">Purchase Successful</h1>
+<div class="success-page-container">
+    <div class="success-card section-card text-center">
+        <!-- Animated Success Shield/Checkmark -->
+        <div class="success-icon-wrapper mb-4">
+            <svg class="success-checkmark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
 
-<p role="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel, at non ipsa qui atque quia placeat maiores perferendis minima tenetur dolorem, excepturi laborum sequi assumenda nobis corporis nostrum aliquam sint.</p>
+        <h1 class="m-0 mb-3" role="product name">Purchase Successful</h1>
+        
+        <p class="success-desc mx-auto text-secondary mb-4" role="description">
+            Thank you for your order! Your billing details have been successfully verified and processed. A digital copy of your receipt has been generated and sent to your email address.
+        </p>
 
-@* Show invoice information after purchase. *@
+        <div class="success-details-panel p-4 mb-4 text-start">
+            <h4 class="details-title mb-3">Order Information</h4>
+            <div class="d-flex justify-content-between py-2 border-bottom border-light-opacity">
+                <span class="text-secondary">Payment Status</span>
+                <span class="badge-success-glow text-success">Approved / Paid</span>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom border-light-opacity">
+                <span class="text-secondary">Processor</span>
+                <span class="text-primary font-mono">Secure Credit Card Checkout</span>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+                <span class="text-secondary">Cart Status</span>
+                <span class="text-muted">Cleared & Archived</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="products" class="btn btn-primary px-4 d-flex align-items-center gap-2">
+                Continue Shopping
+            </a>
+            <a href="" class="btn btn-secondary px-4">
+                Dashboard Home
+            </a>
+        </div>
+    </div>
+</div>
 
 @code {
     protected override async Task OnAfterRenderAsync(bool firstRender)

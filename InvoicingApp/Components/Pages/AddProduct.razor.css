@@ -1,0 +1,35 @@
+.add-product-container {
+    max-width: 580px;
+    margin: 1.5rem auto;
+}
+
+.form-card {
+    padding: 2.5rem !important;
+}
+
+.form-icon-wrapper {
+    width: 54px;
+    height: 54px;
+    background: rgba(2, 132, 199, 0.08);
+    border: 1px solid rgba(2, 132, 199, 0.15);
+    color: var(--accent);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.form-icon {
+    width: 26px;
+    height: 26px;
+}
+
+.form-card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 0.25rem;
+}
+
+.form-card p {
+    font-size: 0.9rem;
+}

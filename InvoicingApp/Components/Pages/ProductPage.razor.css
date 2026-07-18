@@ -1,0 +1,165 @@
+.product-page-container {
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+.back-link {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.back-link:hover {
+    color: var(--text-primary);
+    transform: translateX(-3px);
+}
+
+.product-details-card {
+    padding: 3rem !important;
+}
+
+/* Column 1 Visual Mockup */
+.visual-container {
+    position: relative;
+    height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-lg);
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.warm-glow-backdrop {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+    top: 25%;
+    left: 25%;
+    filter: blur(15px);
+    animation: float-glow 6s ease-in-out infinite alternate;
+}
+
+@keyframes float-glow {
+    0% { transform: translateY(0px) scale(1); }
+    100% { transform: translateY(-10px) scale(1.1); }
+}
+
+.mockup-card {
+    width: 180px;
+    height: 240px;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.visual-container:hover .mockup-card {
+    transform: rotateY(10deg) rotateX(5deg) translateY(-5px);
+    border-color: rgba(2, 132, 199, 0.25);
+    box-shadow: 0 15px 35px rgba(2, 132, 199, 0.1);
+}
+
+.mockup-header {
+    padding: 0.75rem;
+    display: flex;
+    gap: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mockup-circle {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.mockup-body {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+.mockup-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--accent);
+}
+
+.mockup-chip {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(2, 132, 199, 0.08);
+    color: var(--accent);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+/* Column 2 Content */
+.product-category {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+}
+
+.product-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+}
+
+.price-val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.tax-badge {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background-color: #f8fafc;
+}
+
+.box-subtitle {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.product-description {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Benefits */
+.benefit-item {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.benefit-check {
+    width: 16px;
+    height: 16px;
+    color: var(--success);
+    flex-shrink: 0;
+}
