@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace InvoicingApp.Migrations
+namespace EStore.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

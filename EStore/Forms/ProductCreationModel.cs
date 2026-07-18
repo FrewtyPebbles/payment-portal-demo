@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace InvoicingApp.Forms.Product;
+namespace EStore.Forms.Product;
 
 public class ProductCreationModel
 {

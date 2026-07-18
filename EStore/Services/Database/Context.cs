@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoicingApp.Services.Database;
+namespace EStore.Services.Database;
 
 public class Context(DbContextOptions<Context> options) : DbContext(options)
 {

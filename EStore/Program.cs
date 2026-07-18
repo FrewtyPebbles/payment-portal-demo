@@ -1,6 +1,6 @@
 using Stripe;
-using InvoicingApp.Components;
-using InvoicingApp.API;
+using EStore.Components;
+using EStore.API;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,10 +27,10 @@ builder.Services.AddSingleton<StripeClient>(s =>
 });
 
 // Add the ecommerce service as a scoped service - this depends on the stripe client service
-builder.Services.AddScoped<InvoicingApp.Services.Ecommerce.IEcommerceService, InvoicingApp.Services.Ecommerce.EcommerceService>();
+builder.Services.AddScoped<EStore.Services.Ecommerce.IEcommerceService, EStore.Services.Ecommerce.EcommerceService>();
 
 //// Add database
-builder.Services.AddDbContext<InvoicingApp.Services.Database.Context>(options =>
+builder.Services.AddDbContext<EStore.Services.Database.Context>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQL")));
 
 var app = builder.Build();

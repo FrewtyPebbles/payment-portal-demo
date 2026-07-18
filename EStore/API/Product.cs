@@ -1,5 +1,5 @@
-using InvoicingApp.Services.Database;
-using InvoicingApp.Services.Ecommerce;
+using EStore.Services.Database;
+using EStore.Services.Ecommerce;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace InvoicingApp.API;
+namespace EStore.API;
 
 public static class ProductEndpoints
 {

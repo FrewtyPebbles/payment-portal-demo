@@ -1,7 +1,7 @@
-using InvoicingApp.Services.Database;
+using EStore.Services.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoicingApp.Services.Ecommerce;
+namespace EStore.Services.Ecommerce;
 
 public interface IEcommerceService
 {
