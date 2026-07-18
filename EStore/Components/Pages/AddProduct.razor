@@ -8,6 +8,8 @@
 @inject IEcommerceService EcommerceService
 @inject NavigationManager NavigationManager
 
+<PageTitle>LogiSale - Add Product</PageTitle>
+
 <div class="add-product-container">
     <div class="form-card section-card">
         <div class="form-card-header mb-4 text-center">
@@ -32,18 +34,18 @@
 
             <div class="form-group mb-3">
                 <label for="name" class="form-label">Product Name</label>
-                <InputText id="name" @bind-Value="ProductCreationModel.Name" class="form-control" placeholder="e.g. Premium Consulting Hour" />
+                <InputText id="name" @bind-Value="ProductCreationModel.Name" class="form-control" placeholder="e.g. Medium White Running Shoes" />
                 <ValidationMessage For="@(() => ProductCreationModel.Name)" />
             </div>
 
             <div class="form-group mb-3">
                 <label for="description" class="form-label">Description</label>
-                <InputTextArea id="description" @bind-Value="ProductCreationModel.Description" class="form-control" rows="4" placeholder="Brief outline detailing the service deliverables or digital asset benefits." />
+                <InputTextArea id="description" @bind-Value="ProductCreationModel.Description" class="form-control" rows="4" placeholder="A description of the product." />
                 <ValidationMessage For="@(() => ProductCreationModel.Description)" />
             </div>
 
             <div class="form-group mb-4">
-                <label for="price" class="form-label">Price Rate (USD)</label>
+                <label for="price" class="form-label">Price (USD)</label>
                 <div class="input-group">
                     <span class="input-group-text">$</span>
                     <InputNumber id="price" 
@@ -69,10 +71,15 @@
 @code {
     // Instantiate the model to bind form data
     [SupplyParameterFromForm]
-    public ProductCreationModel ProductCreationModel { get; set; } = new();
+    public ProductCreationModel ProductCreationModel { get; set; } = default!;
 
     [SupplyParameterFromQuery]
     public string? Success { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ProductCreationModel ??= new(); 
+    }
 
     private async void HandleSubmitAsync()
     {

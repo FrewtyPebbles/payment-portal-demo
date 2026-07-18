@@ -13,9 +13,6 @@ public class Product
     public required string StripeProductID { get; set; }
     public required string StripePriceID { get; set; }
 
-    [NotMapped]
-    private readonly Stripe.StripeClient _stripeClient;
-
     private Product()
     {
         // EF Core populates the required members using property reflection
@@ -24,7 +21,6 @@ public class Product
     [SetsRequiredMembers]
     public Product(Stripe.StripeClient stripeClient, string productName, float productPrice, string productDescription)
     {
-        _stripeClient = stripeClient;
         Name = productName;
         Description = productDescription;
         Price = productPrice;
@@ -36,7 +32,7 @@ public class Product
             Name = Name,
             Description = Description
         };
-        Stripe.Product stripeProduct = _stripeClient.V1.Products.Create(stripeProductOptions);
+        Stripe.Product stripeProduct = stripeClient.V1.Products.Create(stripeProductOptions);
 
         // Create price:
         Stripe.PriceCreateOptions stripePriceOptions = new()
@@ -45,7 +41,7 @@ public class Product
             Currency = "usd",
             Product = stripeProduct.Id
         };
-        Stripe.Price stripePrice = _stripeClient.V1.Prices.Create(stripePriceOptions);
+        Stripe.Price stripePrice = stripeClient.V1.Prices.Create(stripePriceOptions);
 
         StripeProductID = stripeProduct.Id;
         StripePriceID = stripePrice.Id;

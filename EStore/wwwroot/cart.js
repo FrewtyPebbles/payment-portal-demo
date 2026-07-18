@@ -37,7 +37,7 @@ window.cart = {
             if (cart[stripeProductID] > 1) {
                 cart[stripeProductID] -= 1;
                 localStorage.setItem('cart', JSON.stringify(cart));
-                this.showToast(name + " quantity has been decreased.", "success");
+                this.showToast("A " + name + " order has been removed from your cart.", "success");
             } else {
                 delete cart[stripeProductID];
                 localStorage.setItem('cart', JSON.stringify(cart));
@@ -117,7 +117,7 @@ window.cart = {
         loadingEl.style.display = 'block';
         emptyEl.style.display = 'none';
         contentEl.style.display = 'none';
-        itemsListEl.innerHTML = '';
+        itemsListEl.innerText = '';
 
         var cart = this.getCartQuantities();
         var productIDs = Object.keys(cart);
@@ -218,11 +218,11 @@ window.cart = {
         }
 
         var btn = document.getElementById('checkout-btn');
-        var originalHtml = '';
+        var originalText = '';
         if (btn) {
             btn.disabled = true;
-            originalHtml = btn.innerHTML;
-            btn.innerHTML = 'Connecting to Stripe...';
+            originalText = btn.innerText;
+            btn.innerText = 'Connecting to Stripe...';
         }
 
         fetch('/api/products/checkout', {
@@ -248,7 +248,7 @@ window.cart = {
             window.cart.showToast('Checkout failed. Please try again.', 'error');
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = originalHtml;
+                btn.innerText = originalText;
             }
         });
     },
