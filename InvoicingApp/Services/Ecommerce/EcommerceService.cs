@@ -62,6 +62,12 @@ public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context
 
         Stripe.Checkout.SessionCreateOptions stripeCheckoutSessionCreateOptions = new()
         {
+            BillingAddressCollection = "required",
+            
+            ShippingAddressCollection = new Stripe.Checkout.SessionShippingAddressCollectionOptions
+                {
+                    AllowedCountries = ["US"],
+                },
             LineItems = stripeLineItemOptionsList,
             Mode = "payment",
             SuccessUrl = Environment.GetEnvironmentVariable("DOMAIN") + "/purchase_success"
