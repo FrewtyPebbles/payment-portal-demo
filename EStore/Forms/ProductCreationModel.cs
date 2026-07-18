@@ -13,6 +13,6 @@ public class ProductCreationModel
     public string Description { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "A product price is required.")]
-    [Range(0f, float.MaxValue, ErrorMessage = "The product price must be greater than $0.00.")]
+    [Range(0.01f, float.MaxValue, ErrorMessage = "The product price must be greater than $0.00.")]
     public float Price { get; set; } = 0.0f;
 }
