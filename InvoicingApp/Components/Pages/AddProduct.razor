@@ -4,9 +4,11 @@
 @using InvoicingApp.Services.Notification
 @using InvoicingApp.Services.Ecommerce
 @using InvoicingApp.Services.Database
+@using Microsoft.AspNetCore.Components
 
 @inject NotificationService NotificationService
 @inject IEcommerceService EcommerceService
+@inject NavigationManager NavigationManager
 
 <div class="add-product-container">
     <div class="form-card section-card">
@@ -20,19 +22,26 @@
             <p class="text-secondary m-0 mt-1">Populate details to generate a custom product connected to your storefront catalog.</p>
         </div>
 
-        <EditForm Model="_productCreationModel" OnValidSubmit="HandleSubmitAsync" FormName="ProductCreationForm">
+        @if (Success == "true")
+        {
+            <div class="alert alert-success text-center mb-4" role="alert">
+                Product added successfully!
+            </div>
+        }
+
+        <EditForm Model="ProductCreationModel" OnValidSubmit="HandleSubmitAsync" FormName="ProductCreationForm" Enhance>
             <DataAnnotationsValidator />
 
             <div class="form-group mb-3">
                 <label for="name" class="form-label">Product Name</label>
-                <InputText id="name" @bind-Value="_productCreationModel.Name" class="form-control" placeholder="e.g. Premium Consulting Hour" />
-                <ValidationMessage For="@(() => _productCreationModel.Name)" />
+                <InputText id="name" @bind-Value="ProductCreationModel.Name" class="form-control" placeholder="e.g. Premium Consulting Hour" />
+                <ValidationMessage For="@(() => ProductCreationModel.Name)" />
             </div>
 
             <div class="form-group mb-3">
                 <label for="description" class="form-label">Description</label>
-                <InputTextArea id="description" @bind-Value="_productCreationModel.Description" class="form-control" rows="4" placeholder="Brief outline detailing the service deliverables or digital asset benefits." />
-                <ValidationMessage For="@(() => _productCreationModel.Description)" />
+                <InputTextArea id="description" @bind-Value="ProductCreationModel.Description" class="form-control" rows="4" placeholder="Brief outline detailing the service deliverables or digital asset benefits." />
+                <ValidationMessage For="@(() => ProductCreationModel.Description)" />
             </div>
 
             <div class="form-group mb-4">
@@ -40,13 +49,13 @@
                 <div class="input-group">
                     <span class="input-group-text">$</span>
                     <InputNumber id="price" 
-                        @bind-Value="_productCreationModel.Price" 
+                        @bind-Value="ProductCreationModel.Price" 
                         @bind-Value:format="F2"
                         step="0.01" 
                         class="form-control"
                         placeholder="0.00" />
                 </div>
-                <ValidationMessage For="@(() => _productCreationModel.Price)" />
+                <ValidationMessage For="@(() => ProductCreationModel.Price)" />
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2 py-3 mt-2">
@@ -61,15 +70,20 @@
 
 @code {
     // Instantiate the model to bind form data
-    private ProductCreationModel _productCreationModel = new();
+    [SupplyParameterFromForm]
+    public ProductCreationModel ProductCreationModel { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    public string? Success { get; set; }
 
     private async void HandleSubmitAsync()
     {
-        Product product = await EcommerceService.CreateProductAsync(_productCreationModel.Name, _productCreationModel.Price, _productCreationModel.Description);
-        NotificationService.ShowToast($"Product {product.Name} added successfully.", ToastLevel.Success);
-        
-        // Reset model for clean next input
-        _productCreationModel = new();
-        StateHasChanged();
+        Product product = await EcommerceService.CreateProductAsync(
+            ProductCreationModel.Name,
+            ProductCreationModel.Price,
+            ProductCreationModel.Description
+        );
+
+        NavigationManager.NavigateTo("/add_product?success=true");
     }
 }
