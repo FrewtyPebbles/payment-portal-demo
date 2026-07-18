@@ -1,5 +1,6 @@
 using Stripe;
 using InvoicingApp.Components;
+using InvoicingApp.API;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,12 +10,12 @@ if (builder.Environment.IsDevelopment())
     DotNetEnv.Env.Load("../.env");
     builder.Configuration.AddEnvironmentVariables();
 }
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
 
-//// LocalStorage Service
-builder.Services.AddScoped<InvoicingApp.Services.LocalStorage.LocalStorageService>();
+// Add services to the container.
+builder.Services.AddRazorComponents();
+
+// Add HttpClient for backend tasks (if any) or endpoints
+builder.Services.AddHttpClient();
 
 //// Payment Services
 // Add the stripe client as a singleton service
@@ -25,15 +26,8 @@ builder.Services.AddSingleton<StripeClient>(s =>
     return new StripeClient(stripeAPIKey);
 });
 
-
 // Add the ecommerce service as a scoped service - this depends on the stripe client service
 builder.Services.AddScoped<InvoicingApp.Services.Ecommerce.IEcommerceService, InvoicingApp.Services.Ecommerce.EcommerceService>();
-
-// Add the ecommerce service as a scoped service - this depends on the stripe client service
-builder.Services.AddScoped<InvoicingApp.Services.Ecommerce.ICartService, InvoicingApp.Services.Ecommerce.CartService>();
-
-//// Notification Service
-builder.Services.AddScoped<InvoicingApp.Services.Notification.NotificationService>();
 
 //// Add database
 builder.Services.AddDbContext<InvoicingApp.Services.Database.Context>(options =>
@@ -54,7 +48,9 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>();
+
+// Map Product REST Endpoints
+app.MapProductEndpoints();
 
 app.Run();

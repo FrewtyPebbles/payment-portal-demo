@@ -1,10 +1,4 @@
 @page "/purchase_success"
-@rendermode InteractiveServer
-
-@using InvoicingApp.Services.Ecommerce
-
-@inject ICartService CartService
-@inject IEcommerceService EcommerceService
 
 <PageTitle>Successful Purchase</PageTitle>
 
@@ -50,14 +44,10 @@
     </div>
 </div>
 
-@code {
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // TODO: collect cart before clearing to display on the screen
-            // Clear the cart
-            await CartService.ClearItems(); 
-        }
+<script>
+    if (window.cart && typeof window.cart.clearItems === 'function') {
+        window.cart.clearItems();
+    } else {
+        localStorage.removeItem('cart');
     }
-}
+</script>

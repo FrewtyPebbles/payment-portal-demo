@@ -10,14 +10,13 @@ public interface IEcommerceService
 
     Task<Product?> GetProductAsync(string stripeProductID);
 
-    Task<Stripe.Checkout.Session?> CreateCheckoutSession();
+    Task<Stripe.Checkout.Session?> CreateCheckoutSession(Dictionary<string, int> cartQuantities);
 }
 
-public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context dbContext, ICartService cartService) : IEcommerceService
+public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context dbContext) : IEcommerceService
 {
     private readonly Stripe.StripeClient _stripeClient = stripeClient;
     private readonly Database.Context _dbContext = dbContext;
-    private readonly ICartService _cartService = cartService;
 
     public async Task<Product> CreateProductAsync(string productName, float productPrice, string productDescription)
     {
@@ -37,11 +36,9 @@ public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context
         return product;
     }
 
-    public async Task<Stripe.Checkout.Session?> CreateCheckoutSession()
+    public async Task<Stripe.Checkout.Session?> CreateCheckoutSession(Dictionary<string, int> cartQuantities)
     {
-        Dictionary<string, int>? cartQuantities = await _cartService.GetCartQuantities();
-
-        if (cartQuantities == null)
+        if (cartQuantities == null || cartQuantities.Count == 0)
             return null;
 
         List<Stripe.Checkout.SessionLineItemOptions> stripeLineItemOptionsList = [];

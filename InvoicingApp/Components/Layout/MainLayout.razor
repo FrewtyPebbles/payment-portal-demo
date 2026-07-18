@@ -25,7 +25,16 @@
     </main>
 </div>
 
-<NotificationContainer />
+<div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
+
+<template id="toast-template">
+    <div class="toast show align-items-center text-secondary border-0 mb-2" role="alert">
+        <div class="d-flex">
+            <div class="toast-body"></div>
+            <button type="button" class="btn-close me-2 m-auto" aria-label="Close"></button>
+        </div>
+    </div>
+</template>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
