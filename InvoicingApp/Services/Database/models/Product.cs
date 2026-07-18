@@ -16,6 +16,11 @@ public class Product
     [NotMapped]
     private readonly Stripe.StripeClient _stripeClient;
 
+    private Product()
+    {
+        // EF Core populates the required members using property reflection
+    }
+
     [SetsRequiredMembers]
     public Product(Stripe.StripeClient stripeClient, string productName, float productPrice, string productDescription)
     {

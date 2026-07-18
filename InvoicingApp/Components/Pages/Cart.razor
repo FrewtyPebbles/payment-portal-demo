@@ -1,0 +1,56 @@
+@page "/cart"
+@rendermode InteractiveServer
+
+@using InvoicingApp.Services.Ecommerce
+@using InvoicingApp.Services.Notification
+@using InvoicingApp.Services.Database
+
+@inject ICartService CartService
+@inject IEcommerceService EcommerceService
+@inject NotificationService NotificationService
+
+<h1>Cart</h1>
+
+<ul>
+    @foreach ((Product product, int quantity) in Products) {
+        <li class="cart-item">
+            <div>
+                <h2>@product.Name</h2>
+                <p>@product.Description</p>
+            </div>
+            <div>
+                Quantity @quantity
+            </div>
+            <div>
+                Price <i>$@product.Price</i>
+            </div>
+            <button class="btn btn-primary" @onclick="async _ => await RemoveItemFromCart(product)">Remove</button>
+        </li>
+    }
+</ul>
+
+<button class="btn btn-primary" @onclick="CheckOut">Check Out</button>
+
+@code {
+    public List<(Product, int)> Products = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await foreach ((Product product, int quantity) in CartService.GetProducts()) {
+                Products.Add((product, quantity));
+            }
+        }
+    }
+
+    async Task RemoveItemFromCart(Product product) {
+        // Add the item to the cart and notify that it has been added.
+        await CartService.RemoveItem(product.StripeProductID);
+        NotificationService.ShowToast($"{product!.Name} has been removed from your cart.", ToastLevel.Success);
+    }
+
+    async Task CheckOut() {
+        await EcommerceService.CreateCheckoutSession();
+    }
+}

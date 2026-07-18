@@ -1,12 +1,42 @@
-﻿@page "/create_an_invoice"
+﻿@page "/product/{StripeProductID}"
 @rendermode InteractiveServer
+
 @using InvoicingApp.Services.Ecommerce
+@using InvoicingApp.Services.Notification
+@using InvoicingApp.Services.Database
+
+@inject ICartService CartService
 @inject IEcommerceService EcommerceService
+@inject NavigationManager Navigation
+@inject NotificationService NotificationService
 
-<PageTitle>Product Page</PageTitle>
+<PageTitle>LogiSale - @Product!.Name</PageTitle>
 
-<h1 role="product name">Product Name</h1>
+<h1 role="product name">@Product!.Name</h1>
 
-<p role="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel, at non ipsa qui atque quia placeat maiores perferendis minima tenetur dolorem, excepturi laborum sequi assumenda nobis corporis nostrum aliquam sint.</p>
+<p role="description">@Product!.Description</p>
 
-<button class="btn btn-primary" @onclick="">AddToCart</button>
+<button class="btn btn-primary" @onclick="AddItemToCart">Add To Cart</button>
+
+@code {
+    [Parameter]
+    public string StripeProductID { get; set; } = string.Empty;
+
+    public Product? Product;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Product = await EcommerceService.GetProductAsync(StripeProductID);
+
+        if (Product == null)
+        {
+            Navigation.NavigateTo("/NotFound");
+        }
+    }
+
+    async Task AddItemToCart() {
+        // Add the item to the cart and notify that it has been added.
+        await CartService.AddItem(Product!.StripeProductID);
+        NotificationService.ShowToast($"{Product!.Name} has been added to your cart.", ToastLevel.Success);
+    }
+}

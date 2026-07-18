@@ -7,16 +7,17 @@ public interface IEcommerceService
 {
     // Products
     Task<Product> CreateProductAsync(string productName, float productPrice, string productDescription);
+
     Task<Product?> GetProductAsync(string stripeProductID);
 
-    // Subscription
-    // Subscription CreateSubscription(string productName, float productPrice, string productDescription);
+    Task<Stripe.Checkout.Session?> CreateCheckoutSession();
 }
 
-public class EcommerceService(Stripe.StripeClient stripeClient) : IEcommerceService
+public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context dbContext, ICartService cartService) : IEcommerceService
 {
     private readonly Stripe.StripeClient _stripeClient = stripeClient;
-    private Database.Context _dbContext;
+    private readonly Database.Context _dbContext = dbContext;
+    private readonly ICartService _cartService = cartService;
 
     public async Task<Product> CreateProductAsync(string productName, float productPrice, string productDescription)
     {
@@ -36,22 +37,27 @@ public class EcommerceService(Stripe.StripeClient stripeClient) : IEcommerceServ
         return product;
     }
 
-    async Task<Stripe.Checkout.Session> CreateCheckoutSession(Dictionary<string, int> productsInCart)
+    public async Task<Stripe.Checkout.Session?> CreateCheckoutSession()
     {
+        Dictionary<string, int>? cartQuantities = await _cartService.GetCartQuantities();
+
+        if (cartQuantities == null)
+            return null;
+
         List<Stripe.Checkout.SessionLineItemOptions> stripeLineItemOptionsList = [];
 
         var productQueryEnumerable = _dbContext.Products.Select(product => new
         {
             StripeProductID = product.StripeProductID,
             StripePriceID = product.StripePriceID,
-        }).Where(product => productsInCart.ContainsKey(product.StripeProductID)).ToAsyncEnumerable();
+        }).Where(product => cartQuantities.ContainsKey(product.StripeProductID)).ToAsyncEnumerable();
 
         await foreach (var row in productQueryEnumerable)
         {
             stripeLineItemOptionsList.Add(new()
             {
                 Price = row.StripePriceID,
-                Quantity = productsInCart[row.StripeProductID]
+                Quantity = cartQuantities[row.StripeProductID]
             });
         }
 

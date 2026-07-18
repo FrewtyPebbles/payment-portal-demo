@@ -1,0 +1,29 @@
+﻿@page "/products"
+@rendermode InteractiveServer
+
+@using InvoicingApp.Services.Ecommerce
+@using InvoicingApp.Services.Notification
+@using InvoicingApp.Services.Database
+
+@inject Context DBContext
+@inject IEcommerceService EcommerceService
+@inject NavigationManager Navigation
+@inject NotificationService NotificationService
+
+<h1>
+    Products Listing
+</h1>
+
+<ul>
+    @foreach (Product product in DBContext.Products) {
+        <li>
+            <a href="/product/@product.StripeProductID">
+                <div>
+                    <h2>@product.Name</h2>
+                    <p>@product.Description</p>
+                </div>
+                <i>$@product.Price</i>
+            </a>
+        </li>
+    }
+</ul>
