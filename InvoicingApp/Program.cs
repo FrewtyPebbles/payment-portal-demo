@@ -22,7 +22,6 @@ builder.Services.AddSingleton<StripeClient>(s =>
 {
     string? stripeAPIKey = builder.Configuration["Stripe:Key"]
         ?? "sk_test_placeholder_key_for_migrations";
-    Console.WriteLine(stripeAPIKey);
     return new StripeClient(stripeAPIKey);
 });
 

@@ -1,10 +1,12 @@
 @page "/cart"
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @using InvoicingApp.Services.Ecommerce
 @using InvoicingApp.Services.Notification
 @using InvoicingApp.Services.Database
+@using Stripe.Checkout
 
+@inject NavigationManager NavigationManager
 @inject ICartService CartService
 @inject IEcommerceService EcommerceService
 @inject NotificationService NotificationService
@@ -34,23 +36,36 @@
 @code {
     public List<(Product, int)> Products = [];
 
+    private async Task UpdateProducts()
+    {
+        Products = [];
+        await foreach ((Product product, int quantity) in CartService.GetProducts()) {
+            Products.Add((product, quantity));
+        }
+        StateHasChanged();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await foreach ((Product product, int quantity) in CartService.GetProducts()) {
-                Products.Add((product, quantity));
-            }
+            await UpdateProducts();
         }
     }
 
     async Task RemoveItemFromCart(Product product) {
-        // Add the item to the cart and notify that it has been added.
         await CartService.RemoveItem(product.StripeProductID);
-        NotificationService.ShowToast($"{product!.Name} has been removed from your cart.", ToastLevel.Success);
+    
+        Products.RemoveAll(p => p.Item1.StripeProductID == product.StripeProductID);
+    
+        NotificationService.ShowToast($"{product.Name} has been removed from your cart.", ToastLevel.Success);
+        await UpdateProducts();
     }
 
     async Task CheckOut() {
-        await EcommerceService.CreateCheckoutSession();
+        Session? session = await EcommerceService.CreateCheckoutSession();
+        if (session != null) {
+            NavigationManager.NavigateTo(session.Url);
+        }
     }
 }

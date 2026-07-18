@@ -46,11 +46,13 @@ public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context
 
         List<Stripe.Checkout.SessionLineItemOptions> stripeLineItemOptionsList = [];
 
+        List<string> cartStripeProductIDs = [.. cartQuantities.Keys];
+
         var productQueryEnumerable = _dbContext.Products.Select(product => new
         {
             StripeProductID = product.StripeProductID,
             StripePriceID = product.StripePriceID,
-        }).Where(product => cartQuantities.ContainsKey(product.StripeProductID)).ToAsyncEnumerable();
+        }).Where(product => cartStripeProductIDs.Contains(product.StripeProductID)).ToAsyncEnumerable();
 
         await foreach (var row in productQueryEnumerable)
         {
@@ -65,7 +67,7 @@ public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context
         {
             LineItems = stripeLineItemOptionsList,
             Mode = "payment",
-            SuccessUrl = Environment.GetEnvironmentVariable("DOMAIN")
+            SuccessUrl = Environment.GetEnvironmentVariable("DOMAIN") + "/purchase_success"
         };
 
         return _stripeClient.V1.Checkout.Sessions.Create(stripeCheckoutSessionCreateOptions);

@@ -1,6 +1,9 @@
 @page "/purchase_success"
 @rendermode InteractiveServer
+
 @using InvoicingApp.Services.Ecommerce
+
+@inject ICartService CartService
 @inject IEcommerceService EcommerceService
 
 <PageTitle>Successful Purchase</PageTitle>
@@ -10,3 +13,15 @@
 <p role="description">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel, at non ipsa qui atque quia placeat maiores perferendis minima tenetur dolorem, excepturi laborum sequi assumenda nobis corporis nostrum aliquam sint.</p>
 
 @* Show invoice information after purchase. *@
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // TODO: collect cart before clearing to display on the screen
+            // Clear the cart
+            await CartService.ClearItems(); 
+        }
+    }
+}

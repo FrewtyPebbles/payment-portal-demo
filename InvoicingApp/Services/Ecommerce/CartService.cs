@@ -8,6 +8,8 @@ public interface ICartService
     Task AddItem(string stripeProductID);
 
     Task RemoveItem(string stripeProductID);
+
+    Task ClearItems();
     
     IAsyncEnumerable<(Product, int)> GetProducts();
 
@@ -47,19 +49,27 @@ public class CartService(LocalStorageService localStorageService, Database.Conte
             if (cart.TryGetValue(stripeProductID, out int value))
             {
                 if (value > 1)
-                    await _localStorageService.SetItemAsync(stripeProductID, value - 1);
-                else
-                    await _localStorageService.RemoveItemAsync(stripeProductID);
+                {
+                    cart[stripeProductID] = value - 1;
+                } else
+                    cart.Remove(stripeProductID);
+                await _localStorageService.SetItemAsync("cart", cart);
             }
         }
     }
     
+    async public Task ClearItems()
+    {
+        await _localStorageService.RemoveItemAsync("cart");
+    }
+
     async public IAsyncEnumerable<(Product, int)> GetProducts()
     {
         Dictionary<string, int>? cart = await _localStorageService.GetItemAsync<Dictionary<string, int>>("cart");
         if (cart != null)
         {
-            IAsyncEnumerable<Product> cartProductsEnumerable = _dbContext.Products.Where(product => cart.ContainsKey(product.StripeProductID)).ToAsyncEnumerable();
+            List<string> products = [.. cart.Keys];
+            IAsyncEnumerable<Product> cartProductsEnumerable = _dbContext.Products.Where(product => products.Contains(product.StripeProductID)).ToAsyncEnumerable();
 
             await foreach (Product product in cartProductsEnumerable)
             {
