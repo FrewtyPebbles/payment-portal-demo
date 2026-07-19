@@ -3,9 +3,11 @@
 @using EStore.Forms.Product
 @using EStore.Services.Ecommerce
 @using EStore.Services.Database
+@using EStore.Services.Products
 @using Microsoft.AspNetCore.Components
 
 @inject IEcommerceService EcommerceService
+@inject IProductService ProductService
 @inject NavigationManager NavigationManager
 
 <PageTitle>LogiSale - Add Product</PageTitle>
@@ -81,9 +83,9 @@
         ProductCreationModel ??= new(); 
     }
 
-    private async void HandleSubmitAsync()
+    private async Task HandleSubmitAsync()
     {
-        Product product = await EcommerceService.CreateProductAsync(
+        Product product = await ProductService.AddProductAsync(
             ProductCreationModel.Name,
             ProductCreationModel.Price,
             ProductCreationModel.Description

@@ -59,17 +59,6 @@ public class Product
         StripeProductID = stripeProduct.Id;
         StripePriceID = stripePrice.Id;
     }
-
-    public async Task CommitEmbedding(Context dbContext)
-    {
-        if (Embedding == null)
-            throw new NullReferenceException("The Embedding class parameter for a Product must be set before calling CommitEmbedding.");
-
-        await dbContext.Database.ExecuteSqlRawAsync(
-            "INSERT INTO \"vec_Products\"(id, embedding) VALUES({0}, {1})", 
-            ID, Embedding
-        );
-    }
 }
 
 public record ProductEmbeddingRecord // Vector embedding table
@@ -93,6 +82,6 @@ public record ProductEmbeddingRecord // Vector embedding table
     [VectorStoreData]
     public required string StripePriceID { get; set; }
 
-    [VectorStoreVector(dimensions: 768, DistanceFunction = DistanceFunction.CosineDistance)]
+    [VectorStoreVector(768, DistanceFunction = DistanceFunction.CosineDistance)]
     public float[] Embedding { get; set; } = null!;
 }

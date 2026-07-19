@@ -8,20 +8,22 @@ namespace EStore.Services.Products;
 public interface IProductService
 {
     Task<Database.Product> AddProductAsync(string productName, float productPrice, string productDescription);
+    Task<Database.Product?> GetProductAsync(string stripeProductID);
+    Task<List<Database.Product>> SearchProductsAsync(string searchString, int limit = 5);
 }
 
-public class ProductService(Database.Context dbContext, Embedding.EmbeddingService embeddingService, Stripe.StripeClient stripeClient, IConfiguration configuration) : IProductService
+public class ProductService(Database.Context dbContext, Embedding.IEmbeddingService embeddingService, Stripe.StripeClient stripeClient, IConfiguration configuration) : IProductService
 {
     private readonly Database.Context _dbContext = dbContext;
 
-    private readonly Embedding.EmbeddingService _embeddingService = embeddingService;
+    private readonly Embedding.IEmbeddingService _embeddingService = embeddingService;
 
     private readonly Stripe.StripeClient _stripeClient = stripeClient;
 
     private readonly SqliteCollection<int, Database.ProductEmbeddingRecord> _embeddingCollection =
         new(
             configuration.GetConnectionString("SQL") ?? "Data Source=:memory:", 
-            "Products"
+            "ProductEmbeddings"
         );
 
     public async Task<Database.Product> AddProductAsync(string productName, float productPrice, string productDescription)
@@ -47,6 +49,7 @@ public class ProductService(Database.Context dbContext, Embedding.EmbeddingServi
             Embedding = product.Embedding
         };
 
+        await _embeddingCollection.EnsureCollectionExistsAsync();
         await _embeddingCollection.UpsertAsync(embeddingRecord);
 
         return product;
@@ -58,6 +61,7 @@ public class ProductService(Database.Context dbContext, Embedding.EmbeddingServi
         
         if (product != null)
         {
+            await _embeddingCollection.EnsureCollectionExistsAsync();
             // There will only be a single record since it is a primary key
             await foreach (Database.ProductEmbeddingRecord record in _embeddingCollection.GetAsync(r => r.ID == product.ID, 1))
                 product.Embedding = record.Embedding;
@@ -68,6 +72,13 @@ public class ProductService(Database.Context dbContext, Embedding.EmbeddingServi
 
     public async Task<List<Database.Product>> SearchProductsAsync(string searchString, int limit = 5)
     {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return await _dbContext.Products.Take(limit).ToListAsync();
+        }
+
+        await _embeddingCollection.EnsureCollectionExistsAsync();
+
         float[] searchVector = await _embeddingService.GenerateEmbeddingAsync(searchString);
 
         IAsyncEnumerable<VectorSearchResult<Database.ProductEmbeddingRecord>> searchResults = _embeddingCollection.SearchAsync(searchVector, limit);

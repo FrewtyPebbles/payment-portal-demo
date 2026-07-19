@@ -14,13 +14,13 @@ public interface IEcommerceService
     Task<Stripe.Checkout.Session?> CreateCheckoutSession(Dictionary<string, int> cartQuantities);
 }
 
-public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context dbContext, Products.ProductService productService) : IEcommerceService
+public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context dbContext, Products.IProductService productService) : IEcommerceService
 {
     private readonly Stripe.StripeClient _stripeClient = stripeClient;
 
     private readonly Database.Context _dbContext = dbContext;
 
-    private readonly Products.ProductService _productService = productService;
+    private readonly Products.IProductService _productService = productService;
 
 
     public async Task<Database.Product> CreateProductAsync(string productName, float productPrice, string productDescription)
