@@ -1,4 +1,5 @@
-using EStore.Services.Database;
+using EStore.Services.Embedding;
+using EStore.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace EStore.Services.Ecommerce;
@@ -6,34 +7,30 @@ namespace EStore.Services.Ecommerce;
 public interface IEcommerceService
 {
     // Products
-    Task<Product> CreateProductAsync(string productName, float productPrice, string productDescription);
+    Task<Database.Product> CreateProductAsync(string productName, float productPrice, string productDescription);
 
-    Task<Product?> GetProductAsync(string stripeProductID);
+    Task<Database.Product?> GetProductAsync(string stripeProductID);
 
     Task<Stripe.Checkout.Session?> CreateCheckoutSession(Dictionary<string, int> cartQuantities);
 }
 
-public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context dbContext) : IEcommerceService
+public class EcommerceService(Stripe.StripeClient stripeClient, Database.Context dbContext, Products.ProductService productService) : IEcommerceService
 {
     private readonly Stripe.StripeClient _stripeClient = stripeClient;
+
     private readonly Database.Context _dbContext = dbContext;
 
-    public async Task<Product> CreateProductAsync(string productName, float productPrice, string productDescription)
+    private readonly Products.ProductService _productService = productService;
+
+
+    public async Task<Database.Product> CreateProductAsync(string productName, float productPrice, string productDescription)
     {
-        Product product = new(_stripeClient, productName, productPrice, productDescription);
-
-        _dbContext.Products.Add(product);
-
-        await _dbContext.SaveChangesAsync();
-
-        return product;
+        return await _productService.AddProductAsync(productName, productPrice, productDescription);
     }
 
-    public async Task<Product?> GetProductAsync(string stripeProductID)
+    public async Task<Database.Product?> GetProductAsync(string stripeProductID)
     {
-        Product? product = await _dbContext.Products.FirstOrDefaultAsync(product => product.StripeProductID == stripeProductID);
-
-        return product;
+        return await _productService.GetProductAsync(stripeProductID);
     }
 
     public async Task<Stripe.Checkout.Session?> CreateCheckoutSession(Dictionary<string, int> cartQuantities)

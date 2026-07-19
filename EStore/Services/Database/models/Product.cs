@@ -1,17 +1,30 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.VectorData;
 
 namespace EStore.Services.Database;
 
 public class Product
 {
     public int ID { get; private set; }
+
     public required string Name { get; set; }
+
     public required string Description { get; set; }
+    
     public required float Price { get; set; }
+    
     public required string StripeProductID { get; set; }
+    
     public required string StripePriceID { get; set; }
+
+    [NotMapped]
+    public float[]? Embedding { get; set; }
+
+    [NotMapped]
+    public string EmbeddingText => $"Product Name: {Name}\n\nPrice: ${Price}\n\nDescription: {Description}";
 
     private Product()
     {
@@ -46,4 +59,40 @@ public class Product
         StripeProductID = stripeProduct.Id;
         StripePriceID = stripePrice.Id;
     }
+
+    public async Task CommitEmbedding(Context dbContext)
+    {
+        if (Embedding == null)
+            throw new NullReferenceException("The Embedding class parameter for a Product must be set before calling CommitEmbedding.");
+
+        await dbContext.Database.ExecuteSqlRawAsync(
+            "INSERT INTO \"vec_Products\"(id, embedding) VALUES({0}, {1})", 
+            ID, Embedding
+        );
+    }
+}
+
+public record ProductEmbeddingRecord // Vector embedding table
+{
+    [VectorStoreKey]
+    public int ID { get; set; }
+
+    [VectorStoreData]
+    public required string Name { get; set; }
+
+    [VectorStoreData]
+    public required string Description { get; set; }
+
+    [VectorStoreData]
+    public required float Price { get; set; }
+
+    [VectorStoreData]
+
+    public required string StripeProductID { get; set; }
+
+    [VectorStoreData]
+    public required string StripePriceID { get; set; }
+
+    [VectorStoreVector(dimensions: 768, DistanceFunction = DistanceFunction.CosineDistance)]
+    public float[] Embedding { get; set; } = null!;
 }
