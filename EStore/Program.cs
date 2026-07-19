@@ -79,4 +79,11 @@ app.MapRazorComponents<App>();
 // Map Product REST Endpoints
 app.MapProductEndpoints();
 
+// Automatically apply any pending database migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<EStore.Services.Database.Context>();
+    await dbContext.Database.MigrateAsync();
+}
+
 app.Run();
