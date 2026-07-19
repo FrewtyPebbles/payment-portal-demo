@@ -50,7 +50,6 @@ builder.Services.AddScoped<EStore.Services.Ecommerce.IEcommerceService, EStore.S
 builder.Services.AddDbContext<EStore.Services.Database.Context>(options =>
     options
         .UseSqlite(builder.Configuration.GetConnectionString("SQL") ?? "Data Source=:memory:")
-        .AddInterceptors(new EStore.Services.Database.ConnectionIntercepter())
 );
 
 //// Add vector enabled database

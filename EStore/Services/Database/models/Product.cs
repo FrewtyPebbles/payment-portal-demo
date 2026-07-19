@@ -66,22 +66,6 @@ public record ProductEmbeddingRecord // Vector embedding table
     [VectorStoreKey]
     public int ID { get; set; }
 
-    [VectorStoreData]
-    public required string Name { get; set; }
-
-    [VectorStoreData]
-    public required string Description { get; set; }
-
-    [VectorStoreData]
-    public required float Price { get; set; }
-
-    [VectorStoreData]
-
-    public required string StripeProductID { get; set; }
-
-    [VectorStoreData]
-    public required string StripePriceID { get; set; }
-
     [VectorStoreVector(768, DistanceFunction = DistanceFunction.CosineDistance)]
     public float[] Embedding { get; set; } = null!;
 }

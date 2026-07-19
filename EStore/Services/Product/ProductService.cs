@@ -41,11 +41,6 @@ public class ProductService(Database.Context dbContext, Embedding.IEmbeddingServ
         Database.ProductEmbeddingRecord embeddingRecord = new()
         {
             ID = product.ID,
-            Name = product.Name,
-            Description = product.Description,
-            Price = product.Price,
-            StripePriceID = product.StripePriceID,
-            StripeProductID = product.StripeProductID,
             Embedding = product.Embedding
         };
 
